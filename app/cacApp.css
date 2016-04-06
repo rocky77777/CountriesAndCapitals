@@ -1,0 +1,130 @@
+/*------------------------
+home.html
+------------------------*/
+#cacTitle {
+	font-size: 48pt;
+	text-align: center;
+	margin-bottom: -5px;
+}
+
+#appExplanationDiv {
+	width: 400px;
+	margin: auto;
+}
+
+#appExplanation {
+	text-align: justify;
+	font-size: 20pt;
+}
+
+/*---------------------------
+countries.html
+---------------------------*/
+#countryListDiv {
+	width: 70%;
+	margin: 0 auto;
+	font-size: 14pt;
+}
+
+
+
+/*table and scroll functionality*/
+
+table {
+	border: solid black 2px;
+}
+
+#tableWrapper {
+	position: relative;
+}
+
+#tableScroll {
+	width: 60%;
+	margin: auto;
+	height: 250px;
+	overflow: auto;
+	margin-top: 20px;
+}
+
+#tableWrapper table {
+	width: 100%;
+}
+
+#tableWrapper table * {
+	color:black;
+}
+
+#tableWrapper table thead th .text {
+	position:absolute;   
+	top:-20px;
+	z-index:2;
+	height:20px;
+	width:35%;
+	border:1px solid red;
+}
+
+/*still have to make:
+1. rows clickable
+2. alternate rows slightly different color
+3. border around each individual row? -maybe not if each different color
+4. table header not to scroll*/
+
+
+
+
+/*---------------------------
+country.html
+---------------------------*/
+#individualCountryInfo {
+	width: 50%;
+	margin: auto;
+	font-size: 18pt;
+}
+
+#infoLeft {
+	text-align: right;
+	width: 40%;
+	float: left;
+}
+
+#infoRight {
+	text-align: left;
+	width: 59%;
+	float: right;
+}
+
+#countryImages {
+	display: inline-block;
+	clear: both;
+	width: 100%;
+	text-align: center;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+#countryImages img {
+	height: 150px;
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+
+
+
+/*--------------------------
+buttons
+--------------------------*/
+
+#browseButton {
+	margin: auto;
+	width: 150px;
+	padding: 5px;
+	font-size: 12pt;
+}
+
+#homeButton {
+	margin: auto;
+	width: 150px;
+	padding: 5px;
+	font-size: 12pt;
+}

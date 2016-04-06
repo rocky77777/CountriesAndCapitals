@@ -1,6 +1,29 @@
-<h1>Welcome to {{ country }}</h1>
-<p>Sup?</p>
-<p>{{ greeting }}</p>
+<div id="individualCountryInfo">
+	<h1>{{ data.countryName }}</h1>
+	<div id="infoLeft">
+		<p>Population of Country: </p>
+		<p>Area: </p>
+		<p>Capital: </p>
+		<p>{{neighbourCount}} neighbors: </p>
+	</div>
+	<div id="infoRight">
+		<p>{{data.population | number}}</p>
+		<p>{{data.areaInSqKm | number}}</p>
+		<p>{{data.capital}}</p>
+		<span ng-repeat="n in neighbours"><a ng-href="#/countries/{{n.countryCode}}">{{n.countryName+","}}</a></span>
+		<!-- <span ng-repeat="n in neighbourList"><a ng-href="#/countries/{{country.countryCode}}">{{n+","}}</a></span> -->
 
-<a ng-href="#/">Home</a>
-<a ng-href="#/countries">Browse Countries</a>
+	</div>
+	<div id="countryImages">
+		<img src={{map}}>
+		<img ng-src={{flag}}>
+	</div>
+</div>
+<div id="countryPageButtons">
+	<div id="homeButton">
+		<a ng-href="#/"><button id="homeButton">Home</button></a>
+	</div>
+	<div id="browseButton">
+		<a ng-href="#/countries"><button id="browseButton">Browse Countries</button></a>
+	</div>
+</div>
