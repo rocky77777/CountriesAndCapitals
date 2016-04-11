@@ -128,3 +128,12 @@ buttons
 	padding: 5px;
 	font-size: 12pt;
 }
+
+loading-indicator img {
+	display: block;
+	width: 50%;
+	float: left;
+	position: absolute;
+	opacity: .5;
+	margin-left: 25%;
+}

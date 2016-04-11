@@ -10,7 +10,7 @@
 		<p>{{data.population | number}}</p>
 		<p>{{data.areaInSqKm | number}}</p>
 		<p>{{data.capital}}</p>
-		<span ng-repeat="n in neighbours"><a ng-href="#/countries/{{n.countryCode}}">{{n.countryName+","}}</a></span>
+		<span ng-repeat="n in neighbours"><a ng-href="#/countries/{{n.countryCode}}">{{n.countryName+", "}}</a></span>
 		<!-- <span ng-repeat="n in neighbourList"><a ng-href="#/countries/{{country.countryCode}}">{{n+","}}</a></span> -->
 
 	</div>

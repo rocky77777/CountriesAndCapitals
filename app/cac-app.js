@@ -1,5 +1,5 @@
 var app = angular.module('cacApp', ['ngRoute'])
-app.config(['$routeProvider', function($routeProvider) {
+app.config(function($routeProvider) {
 	$routeProvider
 	.when('/', {
 		templateUrl : 'home.html',
@@ -7,55 +7,98 @@ app.config(['$routeProvider', function($routeProvider) {
 	})
 	.when('/countries/:country', {
 		templateUrl : 'country.html',
-		controller : 'CountryCtrl'
+		controller : 'CountryCtrl',
+		resolve : {
+			data: function($route, $routeParams, $http, $q) {
+				var deferred = $q.defer();
+				var url = "http://api.geonames.org/countryInfoJSON?username=billh&country=" 
+				+ $route.current.params.country;
+
+				var obj = {};
+				
+				$http.get(url)
+				.then(function(result) {
+					obj.data = result.data.geonames[0];
+					obj.flag = "http://www.geonames.org/flags/x/" + obj.data.countryCode.toLowerCase() + ".gif";
+					obj.map = "http://www.geonames.org/img/country/250/"+obj.data.countryCode+".png";
+					// geonameID = $scope.data.geonameId;
+					$http.get("http://api.geonames.org/neighboursJSON?geonameId="+obj.data.geonameId+"&username=billh")
+					.then(function(neighbourResult) {
+						obj.neighbourData = neighbourResult;
+						
+						obj.neighbours = obj.neighbourData.data.geonames;
+						obj.neighbourCount = obj.neighbours.length;
+
+						deferred.resolve(obj);
+					})
+				})
+
+				return deferred.promise;
+			}
+		}
 	})
 	.when('/countries', {
 		templateUrl : 'countries.html',
-		controller : 'CountriesCtrl'
+		controller : 'CountriesCtrl',
+		resolve : {
+			data: function($http, $q, $timeout) {
+				var deferred = $q.defer();
+
+				var url = "http://api.geonames.org/countryInfoJSON?username=billh";
+				$http.get(url)
+				.then(function(result) {
+					$timeout(function() {
+						deferred.resolve(result.data.geonames);
+					}, 500);
+				});
+
+				return deferred.promise;
+			}
+		}
 	})
 	.otherwise({
 		redirectTo : '/'
 	});
-}])
+})
+.directive('loadingIndicator', function() {
+	return {
+		template : '<img src="loading-animation.gif" />',
+		restrict : 'E',
+		link : function(scope, elem, attrs) {
+			scope.$on('load-start', function() {
+				elem.css({'display': 'block'});
+			});
+
+			scope.$on('load-end', function() {
+				elem.css({'display' : 'none'});
+			});
+		}
+	}
+})
 .controller('HomeCtrl', function($scope) {
 	//
 })
-.controller('CountriesCtrl', ['$scope', '$http', function($scope, $http) {
-	var url = "http://api.geonames.org/countryInfoJSON?username=billh";
-	$http.get(url, { cache: true })
-	.then(function(result) {
-		$scope.countries = result.data.geonames;
-	});
-}])
-.controller('CountryCtrl', ['$route', '$scope', '$routeParams', '$http', 
-	function($route, $scope, $routeParams, $http) {
-		var url = "http://api.geonames.org/countryInfoJSON?username=billh&country=" 
-		+ $route.current.params.country;
-		var geonameID = "";
-		$http.get(url)
-		.then(function(result) {
-			$scope.data = result.data.geonames[0];
-			$scope.flag = "http://www.geonames.org/flags/x/" + $scope.data.countryCode.toLowerCase() + ".gif";
-			$scope.map = "http://www.geonames.org/img/country/250/"+$scope.data.countryCode+".png";
-			geonameID = $scope.data.geonameId;
-			$http.get("http://api.geonames.org/neighboursJSON?geonameId="+geonameID+"&username=billh")
-			.then(function(neighbourResult) {
-				$scope.neighbourData = neighbourResult;
-				$scope.neighbourCount = $scope.neighbourData.data.geonames.length;
-				$scope.neighbours = $scope.neighbourData.data.geonames;
-			})
-		})
-	}])
+.controller('CountriesCtrl', function($scope, data) {
+	$scope.countries = data;
+})
+.controller('CountryCtrl', 
+	function( $scope, data) {
+		$scope.data = data.data;
+		$scope.neighbourCount = data.neighbourCount;
+		$scope.neighbours = data.neighbours;
+		$scope.map = $scope.map;
+		$scope.flag = data.flag;
+	})
 .run(function($rootScope, $location, $timeout) {
 	$rootScope.$on('$routeChangeError', function() {
-		$location.path("/error");
+
 	});
 	$rootScope.$on('$routeChangeStart', function() {
-		$rootScope.isLoading = true;
+		$rootScope.$broadcast('load-start');
+		console.log('load-start');
 	});
 	$rootScope.$on('$routeChangeSuccess', function() {
-		$timeout(function() {
-			$rootScope.isLoading = false;
-		}, 1500);
+		$rootScope.$broadcast('load-end');
+		console.log('load-end');
 	});
 });
